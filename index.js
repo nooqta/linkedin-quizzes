@@ -22,7 +22,7 @@ const getDirectories = source =>
  * @returns {string[]} - An array of folder names
  */
 const getQuizzes = (source = 'linkedin-assessments-quizzes') => {
-  const dir = path.join(__dirname, 'node_modules', source);
+  const dir = path.join(process.cwd(), 'node_modules', source);
   const directories = getDirectories(dir).filter(directory => !directory.startsWith('.')).map(directory => ({title: directory, value: directory}));
   return directories;
 }
