@@ -14,7 +14,7 @@ export function getChoices(node: any): Promise<{
     references: any[];
 }>;
 export function getQuestion(node: any): Promise<any[]>;
-export function getQuiz(name: any): Promise<void>;
+export function startQuiz(name: any): Promise<void>;
 export function newQuiz(): Promise<void>;
 export function promptTotal(max?: number): Promise<any>;
 export function promptQuiz(): Promise<any>;
