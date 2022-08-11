@@ -1,6 +1,6 @@
 {
   "name": "linkedin-quizzes",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Linkedin skill assessments quizzes from the terminal",
   "main": "index.js",
   "types": "types/index.d.ts",

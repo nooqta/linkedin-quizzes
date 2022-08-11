@@ -6,7 +6,7 @@ export function prepareQuestion(name: any, question: any, answers: any, choices:
     choices: any;
 }>;
 export function displayResult(answers: any): Promise<void>;
-export function checkAnswer(answers: any, choices: any, value: any, references: any, showCheck?: boolean): Promise<any>;
+export function checkAnswer(answers: any, choices: any, value: any, references: any, opts: any): Promise<any>;
 export function extractQuestionsFromMd(filename: any): Promise<any[]>;
 export function getChoices(node: any): Promise<{
     choices: any[];
@@ -14,7 +14,12 @@ export function getChoices(node: any): Promise<{
     references: any[];
 }>;
 export function getQuestion(node: any): Promise<any[]>;
-export function startQuiz(name: any): Promise<void>;
+declare function startQuiz(name: any, opts?: {
+    showAnswer: boolean;
+    showCorrectAnswer: boolean;
+    showReference: boolean;
+    showScore: boolean;
+}): Promise<void>;
 export function newQuiz(): Promise<void>;
 export function promptTotal(max?: number): Promise<any>;
 export function promptQuiz(): Promise<any>;
@@ -29,3 +34,4 @@ export function getQuizzes(source?: string): string[];
  * @returns {string[]} - An array of folder names
  */
 export function getDirectories(source: string): string[];
+export { startQuiz as getQuiz };
