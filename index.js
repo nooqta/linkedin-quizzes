@@ -11,9 +11,11 @@ const glob = require('glob');
  * @returns {string[]} - An array of folder names
  */
 const getDirectories = source =>
-  fs.readdirSync(source, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name)
+  fs.readdirSync(source, {
+    withFileTypes: true
+  })
+  .filter(dirent => dirent.isDirectory())
+  .map(dirent => dirent.name)
 
 
 /**
@@ -23,12 +25,17 @@ const getDirectories = source =>
  */
 const getQuizzes = (source = 'linkedin-assessments-quizzes') => {
   const dir = path.join(process.cwd(), 'node_modules', source);
-  const directories = getDirectories(dir).filter(directory => !directory.startsWith('.')).map(directory => ({title: directory, value: directory}));
+  const directories = getDirectories(dir).filter(directory => !directory.startsWith('.')).map(directory => ({
+    title: directory,
+    value: directory
+  }));
   return directories;
 }
 
 const promptQuiz = async () => {
-  const { value } = await prompts({
+  const {
+    value
+  } = await prompts({
     type: 'autocomplete',
     name: 'value',
     message: 'Select a quiz',
@@ -38,50 +45,61 @@ const promptQuiz = async () => {
 }
 
 const promptTotal = async (max = 10) => {
-  const { value } = await prompts({
+  const {
+    value
+  } = await prompts({
     type: 'number',
-  name: 'value',
-  message: 'How many questions would you like to have?',
-  initial: 0,
-  style: 'default',
-  min: 2,
-  max
+    name: 'value',
+    message: 'How many questions would you like to have?',
+    initial: 0,
+    style: 'default',
+    min: 2,
+    max
   });
   return value;
 }
 const newQuiz = async () => {
   const name = await promptQuiz();
-  await getQuiz(name);
+  await startQuiz(name);
 }
-
-const getQuiz = async (name) => {
-  glob(path.join(__dirname, 'node_modules',  'linkedin-assessments-quizzes',  name, '*quiz.md'), async (err, files) => {
+const defaultOptions = {
+  showAnswer: true,
+  showCorrectAnswer: true,
+  showReference: true,
+  showScore: true
+}
+const startQuiz = async (name, opts = defaultOptions) => {
+  glob(path.join(process.cwd(), 'node_modules', 'linkedin-assessments-quizzes', name, '*quiz.md'), async (err, files) => {
     if (err || files.length === 0) {
       console.log(err || 'No quiz found');
       process.exit(1);
     }
 
     const quizFile = files[0];
-  
-  const questions = await extractQuestionsFromMd(`${quizFile}`);
-  const candidateAnswers = [];
-  const total = await promptTotal(questions.length);
-  const quizQuestions = _.sampleSize(questions, total);
-  for await (const node of quizQuestions) {
-    const question = await getQuestion(node);
-    const {
-      choices,
-      answers,
-      references
-    } = await getChoices(node);
-    
-    const promptQuestion = await prepareQuestion(name, question, answers, choices);
-    const {value} = await prompts(promptQuestion);
-    candidateAnswers.push(await checkAnswer(answers, choices, value, references));
 
-  }
-  displayResult(candidateAnswers);
-});
+    const questions = await extractQuestionsFromMd(`${quizFile}`);
+    const candidateAnswers = [];
+    const total = await promptTotal(questions.length);
+    const quizQuestions = _.sampleSize(questions, total);
+    for await (const node of quizQuestions) {
+      const question = await getQuestion(node);
+      const {
+        choices,
+        answers,
+        references
+      } = await getChoices(node);
+
+      const promptQuestion = await prepareQuestion(name, question, answers, choices);
+      const {
+        value
+      } = await prompts(promptQuestion);
+      candidateAnswers.push(await checkAnswer(answers, choices, value, references, opts));
+
+    }
+    if (opts.showScore) {
+      displayResult(candidateAnswers);
+    }
+  });
 
 }
 
@@ -97,25 +115,37 @@ const getQuestion = async (node) => {
       visit(child, child.type, async (_node, _, parent) => {
         if (_node.type === 'heading') {
           visit(_node, 'heading', (_child, index, parent) => {
-            questionParts.push({type: 'text', value: chalk.dim.italic(_child.value || _child.children.map(node => node.value).join(''))});
+            questionParts.push({
+              type: 'text',
+              value: chalk.dim.italic(_child.value || _child.children.map(node => node.value).join(''))
+            });
           });
         } else {
           if (_node.type === 'code') {
-            questionParts.push({type: 'code', value: '\n\n' + highlight(_node.value, {
-              language: _node.lang,
-              ignoreIllegals: true,
-              lineNumbers: true
-            })+ '\n\n'});
+            questionParts.push({
+              type: 'code',
+              value: '\n\n' + highlight(_node.value, {
+                language: _node.lang,
+                ignoreIllegals: true,
+                lineNumbers: true
+              }) + '\n\n'
+            });
           }
           if (_node.type === 'paragraph') {
             for await (const __node of _node.children) {
               if (__node.type === 'inlineCode') {
-                questionParts.push({type: 'inlineCode', value: highlight(__node.value, {
-                  language: __node.lang,
-                  ignoreIllegals: true
-                })})
+                questionParts.push({
+                  type: 'inlineCode',
+                  value: highlight(__node.value, {
+                    language: __node.lang,
+                    ignoreIllegals: true
+                  })
+                })
               } else if (__node.type === 'image') {
-                questionParts.push({type: 'image', value: __node.url});;
+                questionParts.push({
+                  type: 'image',
+                  value: __node.url
+                });;
               }
             }
           }
@@ -134,7 +164,7 @@ const getChoices = async (node) => {
   const filtereChildren = [];
   let listFound = false;
   for (const [i, child] of node.children.entries()) {
-    if(child.type !== 'list' && !listFound) {
+    if (child.type !== 'list' && !listFound) {
       listFound = true
     } else {
       filtereChildren.push(child);
@@ -147,8 +177,8 @@ const getChoices = async (node) => {
   const references = [];
   visit(node, ['list', 'code'], (node, _, parent) => {
     // This is a special case for the code block within the list. We need concatenate the code blocks to the choices.
-    if(node.type == 'code') {
-      choices[choices.length-1] = choices[choices.length-1] + '\n' + highlight(node.value, {
+    if (node.type == 'code') {
+      choices[choices.length - 1] = choices[choices.length - 1] + '\n' + highlight(node.value, {
         language: languagesList.includes[node.lang] ? node.lang : 'plaintext',
         ignoreIllegals: true
       });
@@ -171,16 +201,16 @@ const getChoices = async (node) => {
         }).join(''));
       });
     } else {
-        visit(node, 'paragraph', (node, _, parent) => {
-          references.push(node.children.map(node => {
-            if (node.type === 'text' || node.type === 'inlineCode') {
-              return node.value;
-            } else {
-              if (node.type === 'link')
-                return node.children.map(node => node.value).join('') + ': ' + node.url;
-            }
-          }).join(''));
-        });
+      visit(node, 'paragraph', (node, _, parent) => {
+        references.push(node.children.map(node => {
+          if (node.type === 'text' || node.type === 'inlineCode') {
+            return node.value;
+          } else {
+            if (node.type === 'link')
+              return node.children.map(node => node.value).join('') + ': ' + node.url;
+          }
+        }).join(''));
+      });
     }
   })
   answers.push(choices.filter(value => value.includes('[x] ')).map(value => value.replace('[x] ', '')).join(''));
@@ -217,21 +247,40 @@ async function extractQuestionsFromMd(filename) {
   return questions;
 }
 
-async function checkAnswer(answers, choices, value, references, showCheck = true) {
+async function checkAnswer(answers, choices, value, references, opts) {
   const boxen = (await import('boxen')).default;
   const chalk = (await import('chalk')).default;
   const isCorrect = answers.includes(choices[value]);
-  if(!showCheck) return isCorrect;
+  if (!opts.showAnswer) return isCorrect;
   let message = '';
   if (isCorrect) {
-    console.log(boxen(chalk.green.bold('✓ Correct!'), { textAlignment: 'center', borderColor: 'green', borderStyle: 'round' }));
+    console.log(boxen(chalk.green.bold('✓ Correct!'), {
+      textAlignment: 'center',
+      borderColor: 'green',
+      borderStyle: 'round'
+    }));
   } else {
-    message = `${chalk.red.bold(`x`)} ${chalk.dim.italic(`Correct answer is:`)} ${chalk.green(answers.join(', '))}`;
-    console.log(boxen(message, { textAlignment: 'center', padding: 1, borderColor: 'red', borderStyle: 'round' }));
+    if (opts.showCorrectanswer) {
+      message = `${chalk.red.bold(`x`)} ${chalk.dim.italic(`Correct answer is:`)} ${chalk.green(answers.join(', '))}`;
+    } else {
+      message = `${chalk.red.bold(`x`)} ${chalk.red(`Incorrect`)}`;
+    }
+    console.log(boxen(message, {
+      textAlignment: 'center',
+      padding: 1,
+      borderColor: 'red',
+      borderStyle: 'round'
+    }));
   }
-  message = references.join('\n');
-  message && console.log(boxen(message, { textAlignment: 'left',  borderColor: 'white', borderStyle: 'round' }));
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  if (opts.showReference) {
+    message = references.join('\n');
+    message && console.log(boxen(message, {
+      textAlignment: 'left',
+      borderColor: 'white',
+      borderStyle: 'round'
+    }));
+    await new Promise(resolve => setTimeout(resolve, 1500));
+  }
   console.clear();
   return isCorrect
 }
@@ -248,7 +297,12 @@ async function displayResult(answers) {
   let message = `${ score == answers.length? '🏆\n':''}You got ${chalk.green(score)} out of ${chalk.green(answers.length)} correct!\n`;
   message += `${chalk.green.bold(`${score}/${answers.length}`)}\n`;
   message += `Your score is ${Math.round((score / answers.length) * 100)}%`;
-  console.log(boxen(message, { textAlignment: 'center', padding: 1, borderColor: 'green', borderStyle: 'round' }));
+  console.log(boxen(message, {
+    textAlignment: 'center',
+    padding: 1,
+    borderColor: 'green',
+    borderStyle: 'round'
+  }));
 }
 
 async function prepareQuestion(name, question, answers, choices) {
@@ -274,22 +328,22 @@ async function getQuestionText(question, name) {
 }
 
 (function () {
-	'use strict';
+  'use strict';
 
-	module.exports = {
-		getQuestionText,
+  module.exports = {
+    getQuestionText,
     prepareQuestion,
     displayResult,
     checkAnswer,
     extractQuestionsFromMd,
     getChoices,
     getQuestion,
-    getQuiz,
+    getQuiz: startQuiz,
     newQuiz,
     promptTotal,
     promptQuiz,
     getQuizzes,
     getDirectories
 
-	};
+  };
 }());
