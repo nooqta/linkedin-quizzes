@@ -260,7 +260,7 @@ async function checkAnswer(answers, choices, value, references, opts) {
       borderStyle: 'round'
     }));
   } else {
-    if (opts.showCorrectanswer) {
+    if (opts.showCorrectAnswer) {
       message = `${chalk.red.bold(`x`)} ${chalk.dim.italic(`Correct answer is:`)} ${chalk.green(answers.join(', '))}`;
     } else {
       message = `${chalk.red.bold(`x`)} ${chalk.red(`Incorrect`)}`;
