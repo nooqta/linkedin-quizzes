@@ -1,6 +1,6 @@
 {
   "name": "linkedin-quizzes",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Linkedin skill assessments quizzes from the terminal",
   "main": "index.js",
   "types": "types/index.d.ts",
@@ -9,6 +9,9 @@
   },
   "author": "Anis Marrouchi",
   "license": "MIT",
+  "peerDependencies": {
+    "linkedin-assessments-quizzes": "^2.0.0"
+  },
   "dependencies": {
     "boxen": "^7.0.0",
     "chalk": "^5.0.1",
