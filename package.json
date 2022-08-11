@@ -1,0 +1,31 @@
+{
+  "name": "linkedin-quizzes",
+  "version": "1.0.0",
+  "description": "Linkedin skill assessments quizzes from the terminal",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anis Marrouchi",
+  "license": "MIT",
+  "dependencies": {
+    "boxen": "^7.0.0",
+    "chalk": "^5.0.1",
+    "cli-highlight": "^2.1.11",
+    "glob": "^8.0.3",
+    "linkedin-assessments-quizzes": "^2.0.0",
+    "lodash": "^4.17.21",
+    "markdown-json": "^1.6.1",
+    "nextjs-kodyfire": "^0.0.16",
+    "prompts": "^2.4.2",
+    "remark": "^14.0.2",
+    "remark-parse": "^10.0.1",
+    "terminal-image": "^2.0.0",
+    "unified": "^10.1.2",
+    "unist-util-visit": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-beautify": "^1.13.3",
+    "@types/mdast": "^3.0.10"
+  }
+}
