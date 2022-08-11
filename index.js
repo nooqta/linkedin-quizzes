@@ -338,7 +338,7 @@ async function getQuestionText(question, name) {
     extractQuestionsFromMd,
     getChoices,
     getQuestion,
-    getQuiz: startQuiz,
+    startQuiz,
     newQuiz,
     promptTotal,
     promptQuiz,

@@ -34,4 +34,3 @@ export function getQuizzes(source?: string): string[];
  * @returns {string[]} - An array of folder names
  */
 export function getDirectories(source: string): string[];
-export { startQuiz as getQuiz };
