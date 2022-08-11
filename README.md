@@ -1,10 +1,10 @@
 # linkedin-quizzes
-![Version](https://img.shields.io/badge/version-0.0.5-blue.svg?cacheSeconds=2592000)
+![Version](https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000)
 
 
 > Linkedin assesments practice tests from your terminal based on [linkedin-skill-assessments-quizzes](https://github.com/Ebazhanov/linkedin-skill-assessments-quizzes).
 
-```
+
 ## Install
 
 ```sh
