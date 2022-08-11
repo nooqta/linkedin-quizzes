@@ -1,8 +1,9 @@
 {
   "name": "linkedin-quizzes",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Linkedin skill assessments quizzes from the terminal",
   "main": "index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@types/js-beautify": "^1.13.3",
-    "@types/mdast": "^3.0.10"
+    "@types/mdast": "^3.0.10",
+    "typescript": "^4.7.4"
   }
 }

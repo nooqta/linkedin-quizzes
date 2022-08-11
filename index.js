@@ -222,10 +222,11 @@ async function checkAnswer(answers, choices, value, references, showCheck = true
   const chalk = (await import('chalk')).default;
   const isCorrect = answers.includes(choices[value]);
   if(!showCheck) return isCorrect;
+  let message = '';
   if (isCorrect) {
     console.log(boxen(chalk.green.bold('✓ Correct!'), { textAlignment: 'center', borderColor: 'green', borderStyle: 'round' }));
   } else {
-    let message = `${chalk.red.bold(`x`)} ${chalk.dim.italic(`Correct answer is:`)} ${chalk.green(answers.join(', '))}`;
+    message = `${chalk.red.bold(`x`)} ${chalk.dim.italic(`Correct answer is:`)} ${chalk.green(answers.join(', '))}`;
     console.log(boxen(message, { textAlignment: 'center', padding: 1, borderColor: 'red', borderStyle: 'round' }));
   }
   message = references.join('\n');
