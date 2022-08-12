@@ -90,6 +90,7 @@ const startQuiz = async (name, opts = defaultOptions) => {
       } = await getChoices(node);
 
       const promptQuestion = await prepareQuestion(name, question, answers, choices);
+      console.clear();
       const {
         value
       } = await prompts(promptQuestion);
@@ -279,9 +280,8 @@ async function checkAnswer(answers, choices, value, references, opts) {
       borderColor: 'white',
       borderStyle: 'round'
     }));
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, opts.showReference? 2500:1500));
   }
-  console.clear();
   return isCorrect
 }
 
