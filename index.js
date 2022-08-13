@@ -62,12 +62,23 @@ const newQuiz = async () => {
   const name = await promptQuiz();
   await startQuiz(name);
 }
+
 const defaultOptions = {
   showAnswer: true,
   showCorrectAnswer: true,
   showReference: true,
   showScore: true
 }
+const getQuizFile = async (name) => {
+  const dir = path.join(process.cwd(), 'node_modules', 'linkedin-assessments-quizzes', name);
+  const files = glob.sync(path.join(dir, '*quiz.md'));
+  if (files.length === 0) {
+    throw new Error(`No quiz file found in ${dir}`);
+    process.exit(1);
+  }
+  return files[0];
+}
+
 const startQuiz = async (name, opts = defaultOptions) => {
   glob(path.join(process.cwd(), 'node_modules', 'linkedin-assessments-quizzes', name, '*quiz.md'), async (err, files) => {
     if (err || files.length === 0) {
@@ -343,7 +354,7 @@ async function getQuestionText(question, name) {
     promptTotal,
     promptQuiz,
     getQuizzes,
-    getDirectories
-
+    getDirectories,
+    getQuizFile
   };
 }());

@@ -14,7 +14,7 @@ export function getChoices(node: any): Promise<{
     references: any[];
 }>;
 export function getQuestion(node: any): Promise<any[]>;
-declare function startQuiz(name: any, opts?: {
+export function startQuiz(name: any, opts?: {
     showAnswer: boolean;
     showCorrectAnswer: boolean;
     showReference: boolean;
@@ -34,3 +34,4 @@ export function getQuizzes(source?: string): string[];
  * @returns {string[]} - An array of folder names
  */
 export function getDirectories(source: string): string[];
+export function getQuizFile(name: any): Promise<any>;
