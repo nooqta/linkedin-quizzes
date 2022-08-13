@@ -331,7 +331,7 @@ async function getQuestionText(question, name) {
   const terminalImage = (await import('terminal-image')).default;
   return await (Promise.all(question.map(async (node) => {
     if (node.type === 'image') {
-      return '\n' + await terminalImage.file(`${path.join(__dirname, 'node_modules',  'linkedin-assessments-quizzes',  name)}/${node.value}`);
+      return '\n' + await terminalImage.file(`${path.join(process.cwd(), 'node_modules',  'linkedin-assessments-quizzes',  name)}/${node.value}`);
     } else {
       return node.value;
     }
