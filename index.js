@@ -69,6 +69,7 @@ const defaultOptions = {
   showReference: true,
   showScore: true
 }
+
 const getQuizFile = async (name) => {
   glob(path.join(process.cwd(), 'node_modules', 'linkedin-assessments-quizzes', name, '*quiz.md'), {windowsPathsNoEscape: true}, async (err, files) => {
   if (files.length === 0) {
@@ -76,6 +77,7 @@ const getQuizFile = async (name) => {
     process.exit(1);
   }
   return files[0];
+})
 }
 
 const startQuiz = async (name, opts = defaultOptions) => {
