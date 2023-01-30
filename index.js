@@ -81,7 +81,7 @@ const getQuizFile = async (name) => {
 }
 
 const startQuiz = async (name, opts = defaultOptions) => {
-  glob(path.join(process.cwd(), 'node_modules', 'linkedin-assessments-quizzes', name, '*quiz.md'), async (err, files) => {
+  glob(path.join(process.cwd(), 'node_modules', 'linkedin-assessments-quizzes', name, '*quiz.md'), {windowsPathsNoEscape: true}, async (err, files) => {
     if (err || files.length === 0) {
       console.log(err || 'No quiz found');
       process.exit(1);
