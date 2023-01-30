@@ -70,7 +70,7 @@ const defaultOptions = {
   showScore: true
 }
 const getQuizFile = async (name) => {
-  const dir = path.join(process.cwd(), 'node_modules', 'linkedin-assessments-quizzes', name);
+  glob(path.join(process.cwd(), 'node_modules', 'linkedin-assessments-quizzes', name, '*quiz.md'), {windowsPathsNoEscape: true}, async (err, files) => {
   const files = glob.sync(path.join(dir, '*quiz.md'));
   if (files.length === 0) {
     throw new Error(`No quiz file found in ${dir}`);
